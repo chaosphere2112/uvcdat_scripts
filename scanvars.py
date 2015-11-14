@@ -5,7 +5,7 @@ for fname in os.listdir(vcs.sample_data):
         f = cdms2.open(vcs.sample_data + "/" + fname)
     except:
         continue
-    print fname
+    slices = {}
     for v in f.getVariables():
         if cdms2.isVariable(v):
             try:
@@ -15,6 +15,11 @@ for fname in os.listdir(vcs.sample_data):
                     title = v.title
                 except AttributeError:
                     title = v.id
-            print "  ", title
-        #if raw_input("More info?"):
-        #    import ipdb; ipdb.set_trace()
+            axes = v.getAxisList()
+            time_len = 0
+            for axis in axes:
+                if axis.isTime():
+                    time_len = len(axis)
+            if time_len <= 1:
+                continue
+            print fname, title, time_len
